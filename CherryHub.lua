@@ -185,7 +185,7 @@ local function findInTable(tbl, value)
     return nil
 end
 
--- Эмодзи для вкладок
+-- Эмодзи для вкладок (Info - последняя, Universal - предпоследняя)
 local Tabs = {
     {Name = "Murder", Emoji = utf8.char(128128)}, -- 💀
     {Name = "Steal Brainrot", Emoji = utf8.char(129504)}, -- 🧠
@@ -194,6 +194,11 @@ local Tabs = {
     {Name = "Blade Ball", Emoji = utf8.char(9917)}, -- ⚽
     {Name = "Evade", Emoji = utf8.char(128127)}, -- 🏃
     {Name = "BloxFruits", Emoji = utf8.char(127821)}, -- 🍎
+    {Name = "Violence", Emoji = utf8.char(128481)}, -- 🗡️
+    {Name = "99night", Emoji = utf8.char(127769)}, -- 🌙
+    {Name = "pls don", Emoji = utf8.char(128591)}, -- 🙏
+    {Name = "BuildBoat", Emoji = utf8.char(9973)}, -- ⚓
+    {Name = "JailBreak", Emoji = utf8.char(128274)}, -- 🔒
     {Name = "Universal", Emoji = utf8.char(127760)}, -- 🌐
     {Name = "Info", Emoji = utf8.char(8505)} -- ℹ
 }
@@ -315,6 +320,7 @@ function LoadTabContent(tabName)
     if tabName == "Murder" then
         CreateScriptButton("Auto Farm", "https://raw.githubusercontent.com/BIudnyHoIandan/MM2/refs/heads/main/primordial/script/amg.lua")
         CreateScriptButton("YARHM", "https://rawscripts.net/raw/Universal-Script-YARHM-12403", "t.me/Cherruscript")
+        CreateScriptButton("OverDrive Hub", "https://rawscripts.net/raw/Universal-Script-overdrive-h-hub-script-key-require-39673")
     elseif tabName == "Steal Brainrot" then
         CreateScriptButton("Fast Steal", "https://pastefy.app/J3oDjwQ5/raw")
         CreateScriptButton("Chili Hub", "https://rawscripts.net/raw/Steal-a-Brainrot-KEYLESS-TRUE-THE-BEST-STEAL-A-BRAINROT-SCRIPT-45137")
@@ -332,14 +338,27 @@ function LoadTabContent(tabName)
         CreateScriptButton("Draconic X", "https://raw.githubusercontent.com/Nyxarth910/Draconic-Hub-X/refs/heads/main/files/Evade/Overhaul.lua", "t.me/Cherruscript")
     elseif tabName == "BloxFruits" then
         CreateScriptButton("RedZ Universal", "https://raw.githubusercontent.com/Overgustx2/TsuoLoader/refs/heads/main/Tsuo.lua", "t.me/Cherruscript")
-        CreateScriptButton("Fling GUI", "https://raw.githubusercontent.com/0Ben1/fe./main/Fling GUI", "t.me/Cherruscript")
-        CreateScriptButton("Fly", "https://pastebin.com/raw/YSL3xKYU", "t.me/Cherruscript")
-        CreateScriptButton("Infinite Yield (IY FE)", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
+        CreateScriptButton("Vxeze Hub", "https://raw.githubusercontent.com/suntisalts/WeshkyHub/refs/heads/main/MainLoader.lua", "t.me/Cherruscript")
+    elseif tabName == "Violence" then
+        CreateScriptButton("NXP Hub", "https://rawscripts.net/raw/UPDATE-Violence-District-Keyless-script-Esp-Spee-etc-49072", "t.me/Cherruscript")
+        CreateScriptButton("77wiki", "https://raw.githubusercontent.com/areyourealforme/77wiki/refs/heads/main/violencedistrict.lua")
+    elseif tabName == "99night" then
+        CreateScriptButton("Moon || Key 🗝️", "https://raw.githubusercontent.com/m00ndiety/99-nights-in-the-forest/refs/heads/main/Main")
+        CreateScriptButton("VoidWare", "https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", "t.me/Cherruscript")
+        CreateScriptButton("Crystal Hub", "https://raw.githubusercontent.com/shinichi-dz/phucshinsayhi/refs/heads/main/99NightsInTheForest.lua", "t.me/Cherruscript")
+    elseif tabName == "pls don" then
+        CreateScriptButton("Auto thx", "https://raw.githubusercontent.com/mad27coder/RobloxProjectLua/refs/heads/main/AutoChat#https://raw.githubusercontent.com/mad27coder/RobloxProjectLua/refs/heads/main/AutoChat#")
+    elseif tabName == "BuildBoat" then
+        CreateScriptButton("WeshkyHub", "https://raw.githubusercontent.com/suntisalts/WeshkyHub/refs/heads/main/MainLoader.lua", "t.me/Cherruscript")
+    elseif tabName == "JailBreak" then
+        CreateScriptButton("Aoi Setup", "https://raw.githubusercontent.com/zyn789/Aoi-Script/main/Jailbreak", "t.me/Cherruscript")
     elseif tabName == "Universal" then
         CreateScriptButton("RedZ Universal", "https://raw.githubusercontent.com/Overgustx2/TsuoLoader/refs/heads/main/Tsuo.lua", "t.me/Cherruscript")
         CreateScriptButton("Fling GUI", "https://raw.githubusercontent.com/0Ben1/fe./main/Fling GUI", "t.me/Cherruscript")
         CreateScriptButton("Fly", "https://pastebin.com/raw/YSL3xKYU", "t.me/Cherruscript")
         CreateScriptButton("Infinite Yield (IY FE)", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
+        CreateScriptButton("TROLL FE", "https://rawscripts.net/raw/Universal-Script-Free-AK47-universal-script-no-key-47023", "t.me/Cherruscript")
+        CreateScriptButton("ANIMATION R15", "https://raw.githubusercontent.com/Boxten-Keyes/music/refs/heads/main/music%23%5Bscripts%5D/music%23%5Bmiscellaneous%5D/music%23%5Bfe%20r15%20animation%20player%5D.lua")
     elseif tabName == "Info" then
         AddLabel(CHERRY_EMOJI .. " Cherru Hub v1.0")
         AddLabel("Author: @impossible_blade")
