@@ -2,24 +2,41 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
+local HttpService = game:GetService("HttpService")
 local player = Players.LocalPlayer
 local isMobile = UserInputService.TouchEnabled
 local PlaceName = MarketplaceService:GetProductInfo(game.PlaceId).Name
 
+-- Функция для безопасного получения названия игры
+local function getSafePlaceName()
+    local success, result = pcall(function()
+        return MarketplaceService:GetProductInfo(game.PlaceId).Name
+    end)
+    return success and result or "Unknown Game"
+end
+
+local SafePlaceName = getSafePlaceName()
+
+-- Основной GUI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "CherryHub"
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = game:GetService("CoreGui")
 
+-- Переменные для перемещения кнопки
 local dragging = false
 local dragInput, dragStart, startPos
 
+-- Эмодзи черешни
+local CHERRY_EMOJI = utf8.char(127826) -- 🍒
+
+-- Кнопка черешни
 local CherryButton = Instance.new("TextButton")
 CherryButton.Size = UDim2.new(0, 60, 0, 60)
 CherryButton.Position = UDim2.new(0, 20, 0, 20)
 CherryButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CherryButton.Text = "🍒"
+CherryButton.Text = CHERRY_EMOJI
 CherryButton.TextColor3 = Color3.fromRGB(255, 0, 0)
 CherryButton.Font = Enum.Font.GothamBold
 CherryButton.TextSize = 30
@@ -35,6 +52,7 @@ CherryStroke.Color = Color3.fromRGB(100, 100, 100)
 CherryStroke.Thickness = 2
 CherryStroke.Parent = CherryButton
 
+-- Функции для перемещения кнопки
 local function updateInput(input)
     local delta = input.Position - dragStart
     CherryButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
@@ -45,9 +63,7 @@ CherryButton.InputBegan:Connect(function(input)
         dragging = true
         dragStart = input.Position
         startPos = CherryButton.Position
-        
         TweenService:Create(CherryButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)}):Play()
-        
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -74,13 +90,13 @@ if not isMobile then
         TweenService:Create(CherryButton, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
         TweenService:Create(CherryButton, TweenInfo.new(0.2), {TextSize = 32}):Play()
     end)
-    
     CherryButton.MouseLeave:Connect(function()
         TweenService:Create(CherryButton, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
         TweenService:Create(CherryButton, TweenInfo.new(0.2), {TextSize = 30}):Play()
     end)
 end
 
+-- Основной фрейм
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0.9, 0, 0.8, 0)
 MainFrame.Position = UDim2.new(0.05, 0, 0.1, 0)
@@ -110,7 +126,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 60)
 Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Title.Text = "🍒 Cherry Hub v1.0 | " .. PlaceName
+Title.Text = CHERRY_EMOJI .. " Cherru Hub v1.0 | " .. SafePlaceName
 Title.TextColor3 = Color3.fromRGB(255, 0, 0)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
@@ -120,14 +136,22 @@ local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0, 16)
 TitleCorner.Parent = Title
 
-local TabContainer = Instance.new("Frame")
+-- Tabs
+local TabContainer = Instance.new("ScrollingFrame")
 TabContainer.Size = UDim2.new(1, -20, 0, 50)
 TabContainer.Position = UDim2.new(0, 10, 0, 70)
 TabContainer.BackgroundTransparency = 1
+TabContainer.ScrollBarThickness = 6
+TabContainer.ScrollingDirection = Enum.ScrollingDirection.X
+TabContainer.AutomaticCanvasSize = Enum.AutomaticSize.X
+TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
 TabContainer.Parent = MainFrame
 
-local Tabs = {"Murder", "Steal Brainrot", "Dead Rails", "Doors", "Blade Ball", "Evade", "BloxFruits", "Universal", "Info"}
-local CurrentTab = "Murder"
+local TabListLayout = Instance.new("UIListLayout")
+TabListLayout.Padding = UDim.new(0, 10)
+TabListLayout.FillDirection = Enum.FillDirection.Horizontal
+TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabListLayout.Parent = TabContainer
 
 local ContentContainer = Instance.new("ScrollingFrame")
 ContentContainer.Size = UDim2.new(1, -20, 1, -150)
@@ -147,6 +171,11 @@ UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     ContentContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
 end)
 
+TabListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    TabContainer.CanvasSize = UDim2.new(0, TabListLayout.AbsoluteContentSize.X, 0, 0)
+end)
+
+-- Вспомогательные функции
 local function findInTable(tbl, value)
     for i, v in ipairs(tbl) do
         if v == value then
@@ -156,11 +185,26 @@ local function findInTable(tbl, value)
     return nil
 end
 
+-- Эмодзи для вкладок
+local Tabs = {
+    {Name = "Murder", Emoji = utf8.char(128128)}, -- 💀
+    {Name = "Steal Brainrot", Emoji = utf8.char(129504)}, -- 🧠
+    {Name = "Dead Rails", Emoji = utf8.char(128642)}, -- 🚂
+    {Name = "Doors", Emoji = utf8.char(128682)}, -- 🚪
+    {Name = "Blade Ball", Emoji = utf8.char(9917)}, -- ⚽
+    {Name = "Evade", Emoji = utf8.char(128127)}, -- 🏃
+    {Name = "BloxFruits", Emoji = utf8.char(127821)}, -- 🍎
+    {Name = "Universal", Emoji = utf8.char(127760)}, -- 🌐
+    {Name = "Info", Emoji = utf8.char(8505)} -- ℹ
+}
+
+local CurrentTab = "Murder"
+
 local function UpdateTabs()
-    for _, tabName in ipairs(Tabs) do
-        local tab = TabContainer:FindFirstChild(tabName .. "Tab")
+    for _, tabData in ipairs(Tabs) do
+        local tab = TabContainer:FindFirstChild(tabData.Name .. "Tab")
         if tab then
-            if tabName == CurrentTab then
+            if tabData.Name == CurrentTab then
                 TweenService:Create(tab, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 85, 85)}):Play()
                 tab.TextColor3 = Color3.fromRGB(255, 255, 255)
             else
@@ -171,20 +215,18 @@ local function UpdateTabs()
     end
 end
 
-local function CreateTab(name)
-    if TabContainer:FindFirstChild(name .. "Tab") then return end
+local function CreateTab(tabData)
+    if TabContainer:FindFirstChild(tabData.Name .. "Tab") then return end
+    
+    local tabText = tabData.Emoji .. " " .. tabData.Name
+    local textSize = game:GetService("TextService"):GetTextSize(tabText, 14, Enum.Font.GothamMedium, Vector2.new(1000, 50))
+    local tabWidth = math.max(textSize.X + 20, 80) -- Минимальная ширина 80, но адаптируется под текст
     
     local TabButton = Instance.new("TextButton")
-    TabButton.Name = name .. "Tab"
-    TabButton.Size = UDim2.new(1 / #Tabs - 0.05, 0, 1, 0)
-    
-    local tabIndex = findInTable(Tabs, name)
-    if tabIndex then
-        TabButton.Position = UDim2.new((tabIndex - 1) * (1 / #Tabs), 0, 0, 0)
-    end
-    
+    TabButton.Name = tabData.Name .. "Tab"
+    TabButton.Size = UDim2.new(0, tabWidth, 1, 0)
     TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    TabButton.Text = name
+    TabButton.Text = tabText
     TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
     TabButton.Font = Enum.Font.GothamMedium
     TabButton.TextSize = 14
@@ -196,21 +238,21 @@ local function CreateTab(name)
 
     if not isMobile then
         TabButton.MouseEnter:Connect(function()
-            if CurrentTab ~= name then 
+            if CurrentTab ~= tabData.Name then 
                 TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}):Play() 
             end
         end)
         TabButton.MouseLeave:Connect(function()
-            if CurrentTab ~= name then 
+            if CurrentTab ~= tabData.Name then 
                 TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play() 
             end
         end)
     end
 
     TabButton.MouseButton1Click:Connect(function()
-        CurrentTab = name
+        CurrentTab = tabData.Name
         UpdateTabs()
-        LoadTabContent(name)
+        LoadTabContent(tabData.Name)
     end)
 end
 
@@ -280,7 +322,7 @@ function LoadTabContent(tabName)
         CreateScriptButton("Moon Diety", "https://raw.githubusercontent.com/m00ndiety/Moondiety/refs/heads/main/Loader")
         CreateScriptButton("TN Hub", "https://raw.githubusercontent.com/thiennrb7/Script/refs/heads/main/Bringall")
     elseif tabName == "Doors" then
-        CreateScriptButton("KingHub", "https://raw.githubusercontent.com/KINGHUB01/BlackKing-obf/main/Doors%20Blackking%20And%20BobHub")
+        CreateScriptButton("KingHub", "https://raw.githubusercontent.com/KINGHUB01/BlackKing-obf/main/Doors Blackking And BobHub")
         CreateScriptButton("Velocity X", "https://raw.githubusercontent.com/DasVelocity/VelocityX/refs/heads/main/VelocityX.lua")
         CreateScriptButton("NullFire", "https://raw.githubusercontent.com/TeamNullFire/NullFire/main/loader.lua", "t.me/Cherruscript")
     elseif tabName == "Blade Ball" then
@@ -289,16 +331,23 @@ function LoadTabContent(tabName)
     elseif tabName == "Evade" then
         CreateScriptButton("Draconic X", "https://raw.githubusercontent.com/Nyxarth910/Draconic-Hub-X/refs/heads/main/files/Evade/Overhaul.lua", "t.me/Cherruscript")
     elseif tabName == "BloxFruits" then
-        AddLabel("Blox Fruits scripts coming soon!")
+        CreateScriptButton("RedZ Universal", "https://raw.githubusercontent.com/Overgustx2/TsuoLoader/refs/heads/main/Tsuo.lua", "t.me/Cherruscript")
+        CreateScriptButton("Fling GUI", "https://raw.githubusercontent.com/0Ben1/fe./main/Fling GUI", "t.me/Cherruscript")
+        CreateScriptButton("Fly", "https://pastebin.com/raw/YSL3xKYU", "t.me/Cherruscript")
+        CreateScriptButton("Infinite Yield (IY FE)", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
     elseif tabName == "Universal" then
-        AddLabel("Universal scripts coming soon!")
+        CreateScriptButton("RedZ Universal", "https://raw.githubusercontent.com/Overgustx2/TsuoLoader/refs/heads/main/Tsuo.lua", "t.me/Cherruscript")
+        CreateScriptButton("Fling GUI", "https://raw.githubusercontent.com/0Ben1/fe./main/Fling GUI", "t.me/Cherruscript")
+        CreateScriptButton("Fly", "https://pastebin.com/raw/YSL3xKYU", "t.me/Cherruscript")
+        CreateScriptButton("Infinite Yield (IY FE)", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
     elseif tabName == "Info" then
-        AddLabel("Cherry Hub v1.0")
+        AddLabel(CHERRY_EMOJI .. " Cherru Hub v1.0")
         AddLabel("Author: @impossible_blade")
         AddLabel("Telegram: t.me/Cherruscript")
     end
 end
 
+-- Открытие/закрытие интерфейса
 local function ToggleUI()
     if MainFrame.Visible then
         TweenService:Create(MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0.8, 0), Position = UDim2.new(0.5, 0, 0.1, 0)}):Play()
@@ -314,8 +363,8 @@ end
 
 CherryButton.MouseButton1Click:Connect(ToggleUI)
 
-for _, tabName in ipairs(Tabs) do
-    CreateTab(tabName)
+for _, tabData in ipairs(Tabs) do
+    CreateTab(tabData)
 end
 
 UpdateTabs()
@@ -331,12 +380,10 @@ if isMobile then
     CloseButton.Font = Enum.Font.GothamBold
     CloseButton.TextSize = 18
     CloseButton.Parent = MainFrame
-    
+
     local CloseCorner = Instance.new("UICorner")
     CloseCorner.CornerRadius = UDim.new(0, 20)
     CloseCorner.Parent = CloseButton
-    
-    CloseButton.MouseButton1Click:Connect(function()
-        ToggleUI()
-    end)
+
+    CloseButton.MouseButton1Click:Connect(ToggleUI)
 end
