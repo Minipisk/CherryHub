@@ -18,7 +18,7 @@ local ICONS = {
 }
 
 local Window = Rayfield:CreateWindow({
-    Name = "Cherru Hub v2.0 | " .. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
+    Name = "🍒 Cherru Hub v2.0 | " .. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
     LoadingTitle = "Cherru Hub",
     LoadingSubtitle = "by @impossible_blade",
     ConfigurationSaving = { Enabled = false },
@@ -42,13 +42,11 @@ end
 
 local function SafeLoad(name, url)
     pcall(function()
-        loadstring(game:HttpGet(url, true))()
-        Rayfield:Notify({
-            Title = "Script Loaded",
-            Content = "Запущен "..name,
-            Duration = 3,
-            Image = ICONS.INFO
-        })
+        local scriptCode = game:HttpGet(url, true)
+        if scriptCode and #scriptCode > 10 then
+            local f = loadstring(scriptCode)
+            f()
+        end
     end)
 end
 
@@ -102,62 +100,19 @@ if BloxFruitsTab then
     BloxFruitsTab:CreateButton({Name = "Vxeze Hub", Callback = function() SafeLoad("Vxeze Hub", "https://raw.githubusercontent.com/suntisalts/WeshkyHub/main/MainLoader.lua") end})
 end
 
-local ViolenceTab = CreateTabSafe("Violence", ICONS.VIOLENCE)
-if ViolenceTab then
-    ViolenceTab:CreateSection("Violence Scripts")
-    ViolenceTab:CreateButton({Name = "NXP Hub", Callback = function() SafeLoad("NXP Hub", "https://rawscripts.net/raw/UPDATE-Violence-District-Keyless-script-Esp-Spee-etc-49072") end})
-    ViolenceTab:CreateButton({Name = "77wiki", Callback = function() SafeLoad("77wiki", "https://raw.githubusercontent.com/areyourealforme/77wiki/main/violencedistrict.lua") end})
-end
-
-local NightTab = CreateTabSafe("99 Nights", ICONS.NIGHT)
-if NightTab then
-    NightTab:CreateSection("99 Nights Scripts")
-    NightTab:CreateButton({Name = "Moon || Key 🗝️", Callback = function() SafeLoad("Moon || Key 🗝️", "https://raw.githubusercontent.com/m00ndiety/99-nights-in-the-forest/main/Main") end})
-    NightTab:CreateButton({Name = "VoidWare", Callback = function() SafeLoad("VoidWare", "https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua") end})
-    NightTab:CreateButton({Name = "Crystal Hub", Callback = function() SafeLoad("Crystal Hub", "https://raw.githubusercontent.com/shinichi-dz/phucshinsayhi/main/99NightsInTheForest.lua") end})
-end
-
-local PlsDonTab = CreateTabSafe("Pls Donate", ICONS.PLS_DON)
-if PlsDonTab then
-    PlsDonTab:CreateSection("Pls Donate Scripts")
-    PlsDonTab:CreateButton({Name = "Auto Thanks", Callback = function() SafeLoad("Auto Thanks", "https://raw.githubusercontent.com/mad27coder/RobloxProjectLua/main/AutoChat") end})
-end
-
-local BuildBoatTab = CreateTabSafe("Build Boat", ICONS.BUILD_BOAT)
-if BuildBoatTab then
-    BuildBoatTab:CreateSection("Build Boat Scripts")
-    BuildBoatTab:CreateButton({Name = "WeshkyHub", Callback = function() SafeLoad("WeshkyHub", "https://raw.githubusercontent.com/suntisalts/WeshkyHub/main/MainLoader.lua") end})
-end
-
-local JailBreakTab = CreateTabSafe("Jailbreak", ICONS.JAILBREAK)
-if JailBreakTab then
-    JailBreakTab:CreateSection("Jailbreak Scripts")
-    JailBreakTab:CreateButton({Name = "Aoi Setup", Callback = function() SafeLoad("Aoi Setup", "https://raw.githubusercontent.com/zyn789/Aoi-Script/main/Jailbreak") end})
-end
-
 local UniversalTab = CreateTabSafe("Universal", ICONS.UNIVERSAL)
 if UniversalTab then
     UniversalTab:CreateSection("Universal Scripts")
-    UniversalTab:CreateButton({Name = "RedZ Universal", Callback = function() SafeLoad("RedZ Universal", "https://raw.githubusercontent.com/Overgustx2/TsuoLoader/main/Tsuo.lua") end})
-    UniversalTab:CreateButton({Name = "Fling GUI", Callback = function() SafeLoad("Fling GUI", "https://raw.githubusercontent.com/0Ben1/fe./main/Fling%20GUI") end})
+    UniversalTab:CreateButton({Name = "Infinite Yield", Callback = function() SafeLoad("Infinite Yield", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") end})
     UniversalTab:CreateButton({Name = "Fly", Callback = function() SafeLoad("Fly", "https://pastebin.com/raw/YSL3xKYU") end})
-    UniversalTab:CreateButton({Name = "Infinite Yield (IY FE)", Callback = function() SafeLoad("Infinite Yield", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") end})
-    UniversalTab:CreateButton({Name = "TROLL FE", Callback = function() SafeLoad("TROLL FE", "https://rawscripts.net/raw/Universal-Script-Free-AK47-universal-script-no-key-47023") end})
-    UniversalTab:CreateButton({Name = "ANIMATION R15", Callback = function() SafeLoad("ANIMATION R15", "https://raw.githubusercontent.com/Boxten-Keyes/music/main/music%23%5Bscripts%5D/music%23%5Bmiscellaneous%5D/music%23%5Bfe%20r15%20animation%20player%5D.lua") end})
 end
 
 local InfoTab = CreateTabSafe("Info", ICONS.INFO)
 if InfoTab then
     InfoTab:CreateSection("Information")
-    InfoTab:CreateLabel("Cherru Hub v2.0")
-    InfoTab:CreateLabel("Специально для мобильных устройств")
-    InfoTab:CreateLabel("Упрощенная версия для Delta Executor")
-    InfoTab:CreateLabel("Все скрипты загружаются напрямую")
+    InfoTab:CreateLabel("Автор: @impossible_blade")
+    InfoTab:CreateLabel("Канал: t.me/cherruscript")
+    InfoTab:CreateDivider()
+    InfoTab:CreateLabel("Device: " .. tostring(game:GetService("UserInputService"):GetPlatform()))
+    InfoTab:CreateLabel("Executor: Delta Executor")
 end
-
-Rayfield:Notify({
-    Title = "Cherru Hub загружен",
-    Content = "Выберите нужную вкладку и скрипт",
-    Duration = 5,
-    Image = ICONS.INFO
-})
